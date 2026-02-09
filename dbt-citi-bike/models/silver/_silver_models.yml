@@ -1,0 +1,76 @@
+version: 2
+
+models:
+  - name: silver_weather
+    description: "Oczyszczone i wzbogacone dane pogodowe dla NYC - Godzinowe"
+    config:
+      cluster_by: ["weather_main"]
+    columns:
+      - name: dt
+        description: "Primary Key - UNIX timestamp"
+        tests:
+          - unique
+          - not_null
+      - name: temperature
+        description: "Temperatura w stopniach Celsjusza"
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: -50
+                max_value: 60
+      - name: rain_1h
+        description: "Opady deszczu w ciągu ostatniej godziny (mm)"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+      - name: rain_3h
+        description: "Opady deszczu w ciągu ostatnich 3 godzin (mm)"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+      - name: snow_1h
+        description: "Opady śniegu w ciągu ostatniej godziny (mm)"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+      - name: snow_3h
+        description: "Opady śniegu w ciągu ostatnich 3 godzin (mm)"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+  - name: silver_station_status
+    description: "Oczyszczone i wzbogacone dane stacji rowerowych w NYC - Godzinowe"
+    config:
+      cluster_by: ["station_id"]
+    columns:
+      - name: reported_at
+        description: "Primary Key - Data zapisu danych"
+        tests:
+          - not_null
+      - name: station_id
+        description: "Unikalny identyfikator stacji"
+        tests:
+          - not_null
+      - name: bikes_available
+        description: "Liczba dostępnych rowerów"
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+      - name: year
+        description: "Rok (z folderu GCS)"
+      - name: month
+        description: "Miesiąc (z folderu GCS)"
+      - name: day
+        description: "Dzień (z folderu GCS)"
+      - name: hour
+        description: "Godzina (z folderu GCS)"

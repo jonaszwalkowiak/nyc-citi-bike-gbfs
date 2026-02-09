@@ -1,0 +1,15 @@
+name: nyc_citi_bike
+
+profile: nyc_citi_bike
+
+seed-paths: ["seeds"]
+model-paths: ["models"]
+macro-paths: ["macros"]
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  nyc_citi_bike:
+    silver:
+      +materialized: table

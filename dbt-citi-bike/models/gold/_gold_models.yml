@@ -1,0 +1,42 @@
+version: 2
+
+models:
+  - name: gold_station_weather_hourly
+    description: "Zestawione dane o dostępności rowerów i pogodzie w ujęciu godzinowym."
+    columns:
+      - name: data_hour
+        description: "Godzina (timestamp)"
+        tests:
+          - not_null
+      - name: station_id
+        description: "ID stacji"
+        tests:
+          - not_null
+      - name: avg_bikes_available
+        description: "Średnia liczba dostępnych rowerów w danej godzinie"
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - data_hour
+            - station_id
+
+  - name: gold_daily_station_summary
+    description: "Dzienne podsumowanie statystyk stacji i pogody."
+    columns:
+      - name: data_date
+        description: "Data (timestamp - 00:00:00)"
+        tests:
+          - not_null
+      - name: station_id
+        description: "ID stacji"
+        tests:
+          - not_null
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - data_date
+            - station_id

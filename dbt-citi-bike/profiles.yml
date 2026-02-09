@@ -1,0 +1,11 @@
+nyc_citi_bike:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: service-account
+      # keyfile: 
+      project: "data-sedum"
+      dataset: "nyc_citi_bike"
+      threads: 4
+      timeout_seconds: 300

@@ -1,0 +1,40 @@
+sources:
+  - name: nyc_citi_bike
+    database: data-sedum
+    schema: nyc_citi_bike
+    description: "Surowe dane w warstwie Bronze, pobierane z zewnętrznych API (Gbfs dla rowerów i OpenWeather dla pogody)."
+
+    tables:
+      - name: bronze_weather
+        description: >
+          Native table w BigQuery zawierająca surowe dane pogodowe w NYC. 
+          Tabela jest partycjonowana po Ingestion Time (_PARTITIONDATE).
+        columns:
+          - name: dt
+            description: "Unixowy timestamp określający czas odczytu parametrów pogodowych."
+            tests:
+              - not_null
+          - name: main
+            description: "Struktura zawierająca główne parametry (temp, pressure, humidity)."
+          - name: rain
+            description: "Struktura zawierająca dane o opadach deszczu."
+
+      - name: bronze_station_status
+        description: >
+          External table oparta na GCS. Tabela wykorzystuje Hive Partitioning 
+          na poziomie folderów: year, month, day, hour.
+        columns:
+          - name: station_id
+            description: "Unikalny identyfikator stacji rowerowej."
+            tests:
+              - not_null
+          - name: num_bikes_available
+            description: "Liczba dostępnych rowerów w momencie odczytu."
+          - name: year
+            description: "Rok (wyciągnięty z partycji folderu GCS)"
+          - name: month
+            description: "Miesiąc (wyciągnięty z partycji folderu GCS)"
+          - name: day
+            description: "Dzień (wyciągnięty z partycji folderu GCS)"
+          - name: hour
+            description: "Godzina (wyciągnięty z partycji folderu GCS)"
